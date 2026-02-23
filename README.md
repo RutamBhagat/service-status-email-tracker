@@ -25,6 +25,7 @@ uv run python bolena.py
 
 Sender filtering is configured in `bolena.py` via the `EXPECTED_SENDERS` array.
 Add one entry per incident sender email address you want to monitor.
+Incident logs are appended to `incident_updates.log` in the project directory.
 
 ## Deploy (VM + systemd)
 

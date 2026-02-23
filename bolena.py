@@ -1,16 +1,52 @@
 import time
 import email
 import os
+from pathlib import Path
 from email.policy import default
+from fastapi import FastAPI, HTTPException, Response
+from fastapi.responses import FileResponse
 from imapclient import IMAPClient
 
 # --- Configuration ---
 IMAP_HOST = os.getenv("IMAP_HOST", "imap.gmail.com")
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
+RUN_MODE = os.getenv("RUN_MODE", "listener").strip().lower()
+API_HOST = os.getenv("API_HOST", "0.0.0.0")
+API_PORT = int(os.getenv("API_PORT", "8000"))
 EXPECTED_SENDERS = [
     "no-reply@status.incident.io",
 ]
+LOG_FILE_PATH = "incident_updates.log"
+LOG_FILE = Path(LOG_FILE_PATH)
+
+app = FastAPI(title="Bolena Incident Log API")
+
+
+@app.get("/health")
+def health() -> dict[str, str]:
+    return {"status": "ok"}
+
+
+@app.head("/health")
+def health_head() -> Response:
+    return Response(status_code=200)
+
+
+@app.get("/logs")
+def get_logs() -> FileResponse:
+    if not LOG_FILE.exists():
+        raise HTTPException(status_code=404, detail="Log file not found")
+    return FileResponse(LOG_FILE, media_type="text/plain", filename=LOG_FILE.name)
+
+
+def format_log_entry(timestamp, product, status):
+    """Builds a log line close to the assignment example format."""
+    return (
+        f"[{timestamp}] Product: {product}\n"
+        f"Status: {status}\n"
+    )
+
 
 def process_email(message_data):
     """Parses the pushed email and extracts incident info."""
@@ -19,12 +55,18 @@ def process_email(message_data):
 
     subject = (msg.get("subject") or "").replace('\r', '').replace('\n', '')
     sender = (msg.get("from") or "Unknown Sender").replace('\r', '').replace('\n', '')
+    product = f"OpenAI API ({sender})"
 
-    # Simple console output satisfying the requirement
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
-    print(f"[{timestamp}] Sender: {sender}")
-    print(f"Status: {subject}")
+    log_entry = format_log_entry(timestamp, product, subject)
+
+    # Console output
+    print(log_entry, end="")
     print("-" * 60)
+
+    # Persist in local log file
+    with open(LOG_FILE_PATH, "a", encoding="utf-8") as log_file:
+        log_file.write(log_entry)
 
 def main():
     if not EMAIL_USER or not EMAIL_PASS:
@@ -69,5 +111,15 @@ def main():
     except Exception as e:
         print(f"Connection error: {e}")
 
+
+def run_api():
+    import uvicorn
+
+    uvicorn.run(app, host=API_HOST, port=API_PORT)
+
+
 if __name__ == "__main__":
-    main()
+    if RUN_MODE == "api":
+        run_api()
+    else:
+        main()

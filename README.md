@@ -2,6 +2,13 @@
 
 IMAP IDLE listener that receives status emails in real time and prints incident status to stdout.
 
+The implementation is modularized for readability:
+- `config.py`: environment + app configuration
+- `email_processing.py`: RFC822 parsing + sender filtering
+- `incident_logger.py`: log formatting + append/print
+- `imap_listener.py`: push-based IMAP IDLE loop
+- `api.py`: FastAPI app + lifespan thread lifecycle
+
 ## Run with uv
 
 1. Create and sync environment:
@@ -16,31 +23,31 @@ uv sync
 cp .env.example .env
 ```
 
-`bolena.py` auto-loads `.env` using `python-dotenv`.
+`config.py` auto-loads `.env` using `python-dotenv`.
 
 3. Run:
 
 ```bash
-uv run python bolena.py
+uv run python api.py
 ```
 
-Sender filtering is configured in `bolena.py` via the `EXPECTED_SENDERS` array.
+Sender filtering is configured in `config.py` via the `TRACKED_SENDERS` set.
 Add one entry per incident sender email address you want to monitor.
 Incident logs are appended to `incident_updates.log` in the project directory.
 
-API endpoints are exposed from the same file:
+API endpoints are served from `api.py`:
 
 ```bash
-uv run python bolena.py
+uv run python api.py
 ```
 
 - `GET /health`
 - `HEAD /health`
-- `GET /logs`
+- `GET /`
 
 The same process runs both:
 - IMAP listener (started on FastAPI startup, stopped on shutdown)
-- FastAPI server on `127.0.0.1:8000`
+- FastAPI server on `0.0.0.0:8000`
 
 ## Deploy (VM + systemd)
 
@@ -76,7 +83,7 @@ Wants=network-online.target
 Type=simple
 WorkingDirectory=/opt/bolena-simplified
 EnvironmentFile=/etc/bolena.env
-ExecStart=/usr/bin/env uv run python bolena.py
+ExecStart=/usr/bin/env uv run python api.py
 Restart=always
 RestartSec=5
 User=ubuntu

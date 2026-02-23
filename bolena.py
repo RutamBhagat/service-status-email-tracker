@@ -16,6 +16,7 @@ API_HOST = os.getenv("API_HOST", "0.0.0.0")
 API_PORT = int(os.getenv("API_PORT", "8000"))
 EXPECTED_SENDERS = [
     "no-reply@status.incident.io",
+    "rutambhagat@gmail.com"
 ]
 LOG_FILE_PATH = "incident_updates.log"
 LOG_FILE = Path(LOG_FILE_PATH)

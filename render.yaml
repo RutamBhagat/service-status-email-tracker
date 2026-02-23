@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: bolena-simplified
+    runtime: docker
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: IMAP_HOST
+        value: imap.gmail.com

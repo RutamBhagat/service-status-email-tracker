@@ -12,6 +12,8 @@ def listener_loop(stop_event: threading.Event) -> None:
         print("ERROR: Missing credentials. Set EMAIL_USER and EMAIL_PASS.")
         return
 
+    processed_uids: set[int] = set()
+
     while not stop_event.is_set():
         print(f"Connecting to {IMAP_HOST}...")
         try:
@@ -22,7 +24,7 @@ def listener_loop(stop_event: threading.Event) -> None:
 
                 server.idle()
                 while not stop_event.is_set():
-                    responses = server.idle_check(timeout=60)
+                    responses = server.idle_check(timeout=30) # IDLE push + periodic check window
                     if not responses:
                         continue
 
@@ -30,12 +32,15 @@ def listener_loop(stop_event: threading.Event) -> None:
                     messages = server.search("UNSEEN")
                     if messages:
                         fetched = server.fetch(messages, "RFC822")
-                        for msg_data in fetched.values():
+                        for uid, msg_data in fetched.items():
+                            if uid in processed_uids:
+                                continue
                             process_email(
                                 message_data=msg_data,
                                 tracked_senders=TRACKED_SENDERS,
                                 log_file=LOG_FILE,
                             )
+                            processed_uids.add(uid)
                     server.idle()
 
                 try:

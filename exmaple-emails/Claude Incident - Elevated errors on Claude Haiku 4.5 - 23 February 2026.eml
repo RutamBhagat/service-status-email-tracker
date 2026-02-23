@@ -1,0 +1,458 @@
+Delivered-To: 9423302737x@gmail.com
+Received: by 2002:ac9:7e45:0:b0:619:8ea1:22df with SMTP id 5csp3108389ocs;
+        Mon, 23 Feb 2026 06:09:42 -0800 (PST)
+X-Received: by 2002:a05:620a:4416:b0:8c7:eb5:8528 with SMTP id af79cd13be357-8cb8c9d1d0emr1085425185a.1.1771855782121;
+        Mon, 23 Feb 2026 06:09:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771855782; cv=none;
+        d=google.com; s=arc-20240605;
+        b=N05r+hui4Eo7kmYi4Vg6uaaPt/iOY2DY46UX95t9X8Bm2WYu+fH9HQvR2apmBvDV5U
+         +1piiuuKSD98A+5xtJpr9bg/pLTRKlbAWIVsq9lU8FR7rB4MlCZDFHoGCWf0cRrplg4o
+         fBL7bxDAJa/UY7tPIE3Hw3+Dh8/HOq1RVNptrSzV/btRlQ2Imw9RAs37wzBbvlVjfaxE
+         PmuLw3IjIXOdk2k4PbO4fYjx5ht62yp0Wq4tUkAvVIlNW4+Ny43N0BE/5ySAILSGdN7v
+         dJD0NC932KF/xV4VlI+04rKouU+fqcu0h0fzho6dka6W7KDJ+33ekREd69aGZiIlaK67
+         vnZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:feedback-id:reply-to:subject:message-id:mime-version:from:date
+         :dkim-signature:dkim-signature;
+        bh=zGm/fqXIT3SLKbbiTexSZ7f4M+xXcREQH4ZWAJeSw/c=;
+        fh=2DB1wTTEisOp+81ycYfQpxti2U8waV/L5rHhQPxcQOo=;
+        b=RDtfDlRjfICCSWLYJalS1f0JIwAewV7wn1LeGfMbX8SrpSmXgjl7tSnwPro5NvQKZA
+         XcAvHMiOXpZ3I2N17pGcf3SyyGkFGmj/2tWHFlxYyHOHnByN6n3iRTT2oneQt0O9CILd
+         3p6NSHnDN+IcEW9jWqJ1MlrBHeTgfxQRwzGial14oHSW2o6QA1wUE2RGdMNT8mqUenml
+         FbFjJDx+T6xz/knlu3epxYjGjEtv7G6NoyX3Kj7emNBC4EYKqyIcbmBEON/mRfGL1eGR
+         SRTM97m28JzAe8CuWaiBHeDHvgKESVPth+cDWR09/UTn7QRjbLJQD4MbKWZr++26pS0+
+         QSIw==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@statuspage.io header.s=smtpapi header.b=AbF22G6H;
+       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=jO8EyCQp;
+       spf=pass (google.com: domain of noreply@statuspage.io designates 167.89.75.164 as permitted sender) smtp.mailfrom=noreply@statuspage.io;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=statuspage.io
+Return-Path: <noreply@statuspage.io>
+Received: from o9.notifications-sendgrid.statuspage.io (o9.notifications-sendgrid.statuspage.io. [167.89.75.164])
+        by mx.google.com with ESMTPS id af79cd13be357-8cb8d04cd50si669584285a.9.2026.02.23.06.09.41
+        for <9423302737x@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Feb 2026 06:09:42 -0800 (PST)
+Received-SPF: pass (google.com: domain of noreply@statuspage.io designates 167.89.75.164 as permitted sender) client-ip=167.89.75.164;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@statuspage.io header.s=smtpapi header.b=AbF22G6H;
+       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=jO8EyCQp;
+       spf=pass (google.com: domain of noreply@statuspage.io designates 167.89.75.164 as permitted sender) smtp.mailfrom=noreply@statuspage.io;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=statuspage.io
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=statuspage.io;
+	h=content-type:date:from:mime-version:subject:reply-to:feedback-id:to:
+	cc:content-type:date:feedback-id:from:subject:to;
+	s=smtpapi; bh=zGm/fqXIT3SLKbbiTexSZ7f4M+xXcREQH4ZWAJeSw/c=;
+	b=AbF22G6Hs8MD5D71MFIMdH0apd+uQjoZTLubea3FLrp9AAQO9tQ1gi7GjrVnTofOuCBI
+	TLkr+fIeoxPAFtvk9NRH5zskxUUl5zUe+039hiJbTVVxZhc3m/FJniypOTwn4n70/03uv6
+	eOtKh9R6UtSYP2WIwvCNRPPrvwLgyLgbo=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.info;
+	h=content-type:date:from:mime-version:subject:reply-to:feedback-id:to:
+	cc:content-type:date:feedback-id:from:subject:to;
+	s=smtpapi; bh=zGm/fqXIT3SLKbbiTexSZ7f4M+xXcREQH4ZWAJeSw/c=;
+	b=jO8EyCQpLXbRB7+c7k/RQPZ5pL9dHySjEfB/9ZtV+sfyMtXnVjmRIuMgyfoUMNzA9kGw
+	Ri5+8wGQvPbLPhUvXhZTYwlWkAe+XqDxUFIPNkvP2RUvPAYchTHsUX2igQjVakMIJrecvW
+	7DbU/1WmYYHSpE34RPGxVVI0pb4ntqC8Y=
+Received: by recvd-598bc547fb-2764n with SMTP id recvd-598bc547fb-2764n-1-699C5FA5-6D
+	2026-02-23 14:09:41.497965339 +0000 UTC m=+5846151.050093750
+Received: from MTgzNDM5Mw (unknown)
+	by geopod-ismtpd-7 (SG) with HTTP
+	id 1RHI3Q0HQFmM7orkiI7bbw
+	Mon, 23 Feb 2026 14:09:41.458 +0000 (UTC)
+Content-Type: multipart/alternative; boundary=de67dbe722c506280616d059df331ea658d30cff1ede2e28ef575b286570
+Date: Mon, 23 Feb 2026 14:09:41 +0000 (UTC)
+From: noreply@statuspage.io
+Mime-Version: 1.0
+Message-ID: <vx606lmrr9dh-hdrbgczqblp2-r96t6rbwy643@statuspage.io>
+Subject: Claude Incident - Elevated errors on Claude Haiku 4.5 - 23 February
+ 2026
+Reply-To: support@anthropic.com
+Feedback-ID: 
+ =?us-ascii?Q?ip=2Estatuspage=5Fsendgrid=3Apr=2Estatuspage=3Ala=2Estatuspage=2Fincident=5Fup?=
+ =?us-ascii?Q?date=3Astatuspage=5Fsendgrid?=
+X-Entity-Ref-ID: vx606lmrr9dh@statuspage.io
+X-SG-EID: 
+ =?us-ascii?Q?u001=2EwgPQEA+gt=2F9mQv4JaEv+7YWm1zPTMEVIcUvzWm=2FhJbybP6qPvISNR6S6Q?=
+ =?us-ascii?Q?TuWRhOFUYF82wqfapTJ+LfJQ7CyT+taT=2Fj2ftFd?=
+ =?us-ascii?Q?joszE75L2Gavebwqqq7kfflWzDiCh3EDWd=2FF6ZR?=
+ =?us-ascii?Q?UBEy2oxj9QXixDpgJMx7X6y4bRypwTBvCJf25Ls?=
+ =?us-ascii?Q?Xgeft016OFJVdXWfG8saK5tfkh+P98oWOuHkCog?=
+ =?us-ascii?Q?g=3D=3D?=
+To: 9423302737x@gmail.com
+X-Entity-ID: u001.Ulicz5deln8tgOMJa3pEGw==
+
+--de67dbe722c506280616d059df331ea658d30cff1ede2e28ef575b286570
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0
+
+Elevated errors on Claude Haiku 4.5
+
+New incident: Investigating
+We are currently investigating this issue.
+
+Time posted
+Feb 23, 14:06 UTC
+
+Components Affected
+claude.ai, platform.claude.com (formerly console.anthropic.com), Claude API=
+ (api.anthropic.com), Claude Code, Claude for Government
+
+View full incident details https://stspg.io/204ff6tj0b4k
+
+You received this email because you are subscribed to Claude's service stat=
+us notifications.
+Manage your subscription: https://status.claude.com/subscriptions/r96t6rbwy=
+643/edit
+--de67dbe722c506280616d059df331ea658d30cff1ede2e28ef575b286570
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=us-ascii
+Mime-Version: 1.0
+
+<!doctype html><html xmlns=3D"http://www.w3.org/1999/xhtml" xmlns:v=3D"urn:=
+schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-microsoft-com:office:offi=
+ce"><head><title></title><!--[if !mso]><!-- --><meta http-equiv=3D"X-UA-Com=
+patible" content=3D"IE=3Dedge"><!--<![endif]--><meta http-equiv=3D"Content-=
+Type" content=3D"text/html; charset=3DUTF-8"><meta name=3D"viewport" conten=
+t=3D"width=3Ddevice-width,initial-scale=3D1"><style type=3D"text/css">#outl=
+ook a { padding:0; }
+          .ReadMsgBody { width:100%; }
+          .ExternalClass { width:100%; }
+          .ExternalClass * { line-height:100%; }
+          body { margin:0;padding:0;-webkit-text-size-adjust:100%;-ms-text-=
+size-adjust:100%; }
+          table, td { border-collapse:collapse;mso-table-lspace:0pt;mso-tab=
+le-rspace:0pt; }
+          img { border:0;height:auto;line-height:100%; outline:none;text-de=
+coration:none;-ms-interpolation-mode:bicubic; }
+          p { display:block;margin:13px 0; }</style><!--[if !mso]><!--><sty=
+le type=3D"text/css">@media only screen and (max-width:480px) {
+            @-ms-viewport { width:320px; }
+            @viewport { width:320px; }
+          }</style><!--<![endif]--><!--[if mso]>
+        <xml>
+        <o:OfficeDocumentSettings>
+          <o:AllowPNG/>
+          <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+        </xml>
+        <![endif]--><!--[if lte mso 11]>
+        <style type=3D"text/css">
+          .outlook-group-fix { width:100% !important; }
+        </style>
+        <![endif]--><style type=3D"text/css">@media only screen and (min-wi=
+dth:480px) {
+        .mj-column-per-100 { width:100% !important; max-width: 100%; }
+.mj-column-per-85 { width:85% !important; max-width: 85%; }
+      }</style><style type=3D"text/css"></style><style type=3D"text/css">.e=
+mail-logo-image {
+  max-width: 320px;
+  max-height: 100px;
+  width: auto !important;
+  height: auto !important;
+}
+
+@media only screen and (max-width:450px) {
+  .email-logo-image {
+    max-width: 250px;
+  }
+
+  .content-section > table > tbody > tr > td {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .incident-link > table > tbody > tr > td {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .header-spacing > table > tbody > tr > td {
+    padding-top: 45px !important;
+    padding-bottom: 30px !important;
+  }
+}
+
+/* border-radius, border, and border-collapse: collapse do not combine well=
+. */
+/* when we do have embedded (discrete) css, override this to put the border=
+ on the outside div, not on the table cell. */
+div.content-outer > table,
+div.content-outer > table > tbody > tr > td {
+  border: none !important;
+}
+
+div.content-outer {
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  border: 1px solid #DEDCD1;
+}
+
+.email-body a, .email-body a:hover, .email-body a:visited {
+  color: #141413 !important;
+}
+
+
+
+      table, td {
+        border-collapse: separate;
+      }
+
+      div.content-outer > table {
+        background: #FAF9F5;
+        border: 1px solid #DEDCD1;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.1);
+      }
+
+      div.outlook-affected-components-column table table {
+        table-layout: fixed;
+      }
+
+      div.incident-link > table {
+        border-collapse: collapse;
+        border-top: 1px solid #DEDCD1;
+        vertical-align: middle;
+      }
+
+      div.incident-link link {
+        padding: 25px 0;
+      }
+
+      .email-body img {
+        max-width: 100%;
+      }
+
+      div.footer-text a {
+        color: #141413;
+      }  td {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto=
+', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-se=
+rif !important;
+      }</style></head><body style=3D"font-size: 16px; line-height: 24px; fo=
+nt-weight: normal; font-style: normal; background-color: #f7f6f1;"><div sty=
+le=3D"display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0=
+px;max-width:0px;opacity:0;overflow:hidden;"> Investigating - 5 components =
+affected - We are currently investigating this issue. &zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>=
+<div style=3D"background-color:#f7f6f1;"><!--[if mso | IE]><table align=3D"=
+center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"header-sp=
+acing-outlook" style=3D"width:600px;" width=3D"600" ><tr><td style=3D"line-=
+height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]--><div cl=
+ass=3D"header-spacing" style=3D"Margin:0px auto;max-width:600px;"><table al=
+ign=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"pre=
+sentation" style=3D"width:100%;"><tbody><tr><td style=3D"direction:ltr;font=
+-size:0px;padding:0;padding-bottom:30px;padding-left:0px;padding-right:0px;=
+padding-top:30px;text-align:center;vertical-align:top;"><!--[if mso | IE]><=
+table role=3D"presentation" border=3D"0" cellpadding=3D"0" cellspacing=3D"0=
+"><tr><td class=3D"" style=3D"vertical-align:top;width:600px;" ><![endif]--=
+><div class=3D"mj-column-per-100 outlook-group-fix" style=3D"font-size:13px=
+;text-align:left;direction:ltr;display:inline-block;vertical-align:top;widt=
+h:100%;"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"pr=
+esentation" width=3D"100%"><tbody><tr><td style=3D"vertical-align:top;paddi=
+ng:0;"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"pres=
+entation" width=3D"100%"><tr><td align=3D"center" style=3D"font-size:0px;pa=
+dding:0;word-break:break-word;"><div style=3D"font-size:13px;line-height:1;=
+text-align:center;color:#000000;">  <img class=3D"email-logo-image" src=3D"=
+https://dka575ofm4ao0.cloudfront.net/pages-email_logos/original/362807/NEW_=
+claude_status_email.png-d88779a1-c7b3-456d-b84e-1d0cdd4614e9.png" width=3D"=
+320">  </div></td></tr></table></td></tr></tbody></table></div><!--[if mso =
+| IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if=
+ mso | IE]></td></tr></table><table align=3D"center" border=3D"0" cellpaddi=
+ng=3D"0" cellspacing=3D"0" class=3D"content-outer-outlook" style=3D"width:6=
+00px;" width=3D"600" ><tr><td style=3D"line-height:0px;font-size:0px;mso-li=
+ne-height-rule:exactly;"><![endif]--><div class=3D"content-outer" style=3D"=
+background:#FAF9F5;background-color:#FAF9F5;Margin:0px auto;border-radius:4=
+px;max-width:600px;"><table align=3D"center" border=3D"0" cellpadding=3D"0"=
+ cellspacing=3D"0" role=3D"presentation" style=3D"background:#FAF9F5;backgr=
+ound-color:#FAF9F5;width:100%;border-radius:4px;"><tbody><tr><td style=3D"b=
+order:solid 1px #DEDCD1;direction:ltr;font-size:0px;padding:0px;text-align:=
+center;vertical-align:top;"><!--[if mso | IE]><table role=3D"presentation" =
+border=3D"0" cellpadding=3D"0" cellspacing=3D"0"><tr><td class=3D"content-s=
+ection-outlook" width=3D"600px" ><table align=3D"center" border=3D"0" cellp=
+adding=3D"0" cellspacing=3D"0" class=3D"content-section-outlook" style=3D"w=
+idth:600px;" width=3D"600" ><tr><td style=3D"line-height:0px;font-size:0px;=
+mso-line-height-rule:exactly;"><![endif]--><div class=3D"content-section" s=
+tyle=3D"Margin:0px auto;max-width:600px;"><table align=3D"center" border=3D=
+"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"widt=
+h:100%;"><tbody><tr><td style=3D"direction:ltr;font-size:0px;padding:0;padd=
+ing-left:40px;padding-right:40px;text-align:center;vertical-align:top;"><!-=
+-[if mso | IE]><table role=3D"presentation" border=3D"0" cellpadding=3D"0" =
+cellspacing=3D"0"><tr><td class=3D"" width=3D"600px" ><table align=3D"cente=
+r" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"" style=3D"wid=
+th:520px;" width=3D"520" ><tr><td style=3D"line-height:0px;font-size:0px;ms=
+o-line-height-rule:exactly;"><![endif]--><div style=3D"Margin:0px auto;max-=
+width:520px;"><table align=3D"center" border=3D"0" cellpadding=3D"0" cellsp=
+acing=3D"0" role=3D"presentation" style=3D"width:100%;"><tbody><tr><td styl=
+e=3D"direction:ltr;font-size:0px;padding:0;padding-top:50px;text-align:cent=
+er;vertical-align:top;"><!--[if mso | IE]><table role=3D"presentation" bord=
+er=3D"0" cellpadding=3D"0" cellspacing=3D"0"><tr><td class=3D"" style=3D"ve=
+rtical-align:top;width:520px;" ><![endif]--><div class=3D"mj-column-per-100=
+ outlook-group-fix" style=3D"font-size:13px;text-align:left;direction:ltr;d=
+isplay:inline-block;vertical-align:top;width:100%;"><table border=3D"0" cel=
+lpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%"><tbod=
+y><tr><td style=3D"vertical-align:top;padding:0;"><table border=3D"0" cellp=
+adding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%"><tr><td=
+ align=3D"left" style=3D"font-size:0px;padding:0;word-break:break-word;"><d=
+iv style=3D"font-size:13px;line-height:1;text-align:left;color:#000000;"><t=
+able cellpadding=3D"0" cellspacing=3D"0" height=3D"0" width=3D"32" padding=
+=3D"0" style=3D"Margin:0;border-top:3px solid #FAA72A;"><tr><td></td></tr><=
+/table> <table role=3D"presentation" border=3D"0" cellpadding=3D"0" cellspa=
+cing=3D"0"><tr><td height=3D"20" style=3D"height:20px;"></td></tr></table>
+ <h2 style=3D"margin: 0; font-weight: normal; font-size: 24px; line-height:=
+ 32px; color: #141413;">Elevated errors on Claude Haiku 4.5</h2> <table rol=
+e=3D"presentation" border=3D"0" cellpadding=3D"0" cellspacing=3D"0"><tr><td=
+ height=3D"35" style=3D"height:35px;"></td></tr></table>
+ <span style=3D"font-size: 18px;line-height: 1.5;color: #141413;">New incid=
+ent: Investigating</span> <table role=3D"presentation" border=3D"0" cellpad=
+ding=3D"0" cellspacing=3D"0"><tr><td height=3D"12" style=3D"height:12px;"><=
+/td></tr></table>
+ <span class=3D"email-body" style=3D"font-size: 14px;line-height: 1.5;color=
+: #141413;">We are currently investigating this issue.</span> <table role=
+=3D"presentation" border=3D"0" cellpadding=3D"0" cellspacing=3D"0"><tr><td =
+height=3D"35" style=3D"height:35px;"></td></tr></table>
+ <h3 style=3D"margin: 0; font-weight: normal; font-size: 14px; line-height:=
+ 1.5; color: #87867F;">Time posted</h3> <table role=3D"presentation" border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0"><tr><td height=3D"12" style=3D"h=
+eight:12px;"></td></tr></table>
+ <span style=3D"font-size: 14px;line-height: 1.5;color: #141413;">Feb 23, 1=
+4:06 UTC</span> <table role=3D"presentation" border=3D"0" cellpadding=3D"0"=
+ cellspacing=3D"0"><tr><td height=3D"35" style=3D"height:35px;"></td></tr><=
+/table>
+   <h3 style=3D"margin: 0; font-weight: normal; font-size: 14px; line-heigh=
+t: 1.5; color: #87867F;">Components affected</h3> <table role=3D"presentati=
+on" border=3D"0" cellpadding=3D"0" cellspacing=3D"0"><tr><td height=3D"15" =
+style=3D"height:15px;"></td></tr></table>
+ <table cellspacing=3D"0" cellpadding=3D"0" class=3D"affected-component" st=
+yle=3D"font-family: inherit;margin: 0 20px 0 0; padding: 0 0 15px 0; displa=
+y: inline-block; color: #141413; font-size: 14px; max-width: 100%;  overflo=
+w: hidden; text-overflow: ellipsis; white-space: nowrap;"><tr><td style=3D"=
+padding-right: 5px;"><img width=3D"15" height=3D"15" alt=3D"Degraded Perfor=
+mance" style=3D"vertical-align: middle;" src=3D"https://dka575ofm4ao0.cloud=
+front.net/assets/pages/manage/font_awesome_icons/degraded_performance-921ed=
+ab8b5d9f81dc182f3e77fde9e3c81dc0ef0cf3badebef97a2cd94591dd8.png" /></td><td=
+ style=3D"vertical-align: middle;">claude.ai</td></tr></table><table cellsp=
+acing=3D"0" cellpadding=3D"0" class=3D"affected-component" style=3D"font-fa=
+mily: inherit;margin: 0 20px 0 0; padding: 0 0 15px 0; display: inline-bloc=
+k; color: #141413; font-size: 14px; max-width: 100%;  overflow: hidden; tex=
+t-overflow: ellipsis; white-space: nowrap;"><tr><td style=3D"padding-right:=
+ 5px;"><img width=3D"15" height=3D"15" alt=3D"Degraded Performance" style=
+=3D"vertical-align: middle;" src=3D"https://dka575ofm4ao0.cloudfront.net/as=
+sets/pages/manage/font_awesome_icons/degraded_performance-921edab8b5d9f81dc=
+182f3e77fde9e3c81dc0ef0cf3badebef97a2cd94591dd8.png" /></td><td style=3D"ve=
+rtical-align: middle;">platform.claude.com (formerly console...</td></tr></=
+table><table cellspacing=3D"0" cellpadding=3D"0" class=3D"affected-componen=
+t" style=3D"font-family: inherit;margin: 0 20px 0 0; padding: 0 0 15px 0; d=
+isplay: inline-block; color: #141413; font-size: 14px; max-width: 100%;  ov=
+erflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><tr><td styl=
+e=3D"padding-right: 5px;"><img width=3D"15" height=3D"15" alt=3D"Degraded P=
+erformance" style=3D"vertical-align: middle;" src=3D"https://dka575ofm4ao0.=
+cloudfront.net/assets/pages/manage/font_awesome_icons/degraded_performance-=
+921edab8b5d9f81dc182f3e77fde9e3c81dc0ef0cf3badebef97a2cd94591dd8.png" /></t=
+d><td style=3D"vertical-align: middle;">Claude API (api.anthropic.com)</td>=
+</tr></table><table cellspacing=3D"0" cellpadding=3D"0" class=3D"affected-c=
+omponent" style=3D"font-family: inherit;margin: 0 20px 0 0; padding: 0 0 15=
+px 0; display: inline-block; color: #141413; font-size: 14px; max-width: 10=
+0%;  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><tr><=
+td style=3D"padding-right: 5px;"><img width=3D"15" height=3D"15" alt=3D"Deg=
+raded Performance" style=3D"vertical-align: middle;" src=3D"https://dka575o=
+fm4ao0.cloudfront.net/assets/pages/manage/font_awesome_icons/degraded_perfo=
+rmance-921edab8b5d9f81dc182f3e77fde9e3c81dc0ef0cf3badebef97a2cd94591dd8.png=
+" /></td><td style=3D"vertical-align: middle;">Claude Code</td></tr></table=
+><table cellspacing=3D"0" cellpadding=3D"0" class=3D"affected-component" st=
+yle=3D"font-family: inherit;margin: 0 20px 0 0; padding: 0 0 15px 0; displa=
+y: inline-block; color: #141413; font-size: 14px; max-width: 100%;  overflo=
+w: hidden; text-overflow: ellipsis; white-space: nowrap;"><tr><td style=3D"=
+padding-right: 5px;"><img width=3D"15" height=3D"15" alt=3D"Degraded Perfor=
+mance" style=3D"vertical-align: middle;" src=3D"https://dka575ofm4ao0.cloud=
+front.net/assets/pages/manage/font_awesome_icons/degraded_performance-921ed=
+ab8b5d9f81dc182f3e77fde9e3c81dc0ef0cf3badebef97a2cd94591dd8.png" /></td><td=
+ style=3D"vertical-align: middle;">Claude for Government</td></tr></table> =
+ <table role=3D"presentation" border=3D"0" cellpadding=3D"0" cellspacing=3D=
+"0"><tr><td height=3D"40" style=3D"height:40px;"></td></tr></table>
+  </div></td></tr></table></td></tr></tbody></table></div><!--[if mso | IE]=
+></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso =
+| IE]></td></tr></table></td></tr></table><![endif]--></td></tr></tbody></t=
+able></div><!--[if mso | IE]></td></tr></table></td></tr><tr><td class=3D"i=
+ncident-link-outlook" width=3D"600px" ><table align=3D"center" border=3D"0"=
+ cellpadding=3D"0" cellspacing=3D"0" class=3D"incident-link-outlook" style=
+=3D"width:600px;" width=3D"600" ><tr><td style=3D"line-height:0px;font-size=
+:0px;mso-line-height-rule:exactly;"><![endif]--><div class=3D"incident-link=
+" style=3D"Margin:0px auto;max-width:600px;"><table align=3D"center" border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"w=
+idth:100%;"><tbody><tr><td style=3D"border-top:1px solid #DEDCD1;direction:=
+ltr;font-size:0px;padding:0;padding-left:40px;padding-right:40px;text-align=
+:center;vertical-align:top;"><!--[if mso | IE]><table role=3D"presentation"=
+ border=3D"0" cellpadding=3D"0" cellspacing=3D"0"><tr><td class=3D"" style=
+=3D"vertical-align:top;width:520px;" ><![endif]--><div class=3D"mj-column-p=
+er-100 outlook-group-fix" style=3D"font-size:13px;text-align:left;direction=
+:ltr;display:inline-block;vertical-align:top;width:100%;"><table border=3D"=
+0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%"=
+><tbody><tr><td style=3D"vertical-align:top;padding:0;"><table border=3D"0"=
+ cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"100%"><=
+tr><td align=3D"left" style=3D"font-size:0px;padding:0;padding-top:25px;pad=
+ding-bottom:25px;word-break:break-word;"><div style=3D"font-size:13px;line-=
+height:1;text-align:left;color:#000000;"> <a class=3D"link" style=3D"font-s=
+ize: 14px; color: #141413" href=3D"https://stspg.io/204ff6tj0b4k">View full=
+ incident details</a> </div></td></tr></table></td></tr></tbody></table></d=
+iv><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></tabl=
+e></div><!--[if mso | IE]></td></tr></table></td></tr></table><![endif]--><=
+/td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><table a=
+lign=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D""=
+ style=3D"width:600px;" width=3D"600" ><tr><td style=3D"line-height:0px;fon=
+t-size:0px;mso-line-height-rule:exactly;"><![endif]--><div style=3D"Margin:=
+0px auto;max-width:600px;"><table align=3D"center" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"width:100%;"><tbody=
+><tr><td style=3D"direction:ltr;font-size:0px;padding:0;padding-top:20px;te=
+xt-align:center;vertical-align:top;"><!--[if mso | IE]><table role=3D"prese=
+ntation" border=3D"0" cellpadding=3D"0" cellspacing=3D"0"><tr><td class=3D"=
+" style=3D"vertical-align:top;width:510px;" ><![endif]--><div class=3D"mj-c=
+olumn-per-85 outlook-group-fix" style=3D"font-size:13px;text-align:left;dir=
+ection:ltr;display:inline-block;vertical-align:top;width:100%;"><table bord=
+er=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D=
+"100%"><tbody><tr><td style=3D"vertical-align:top;padding:0;"><table border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" width=3D"1=
+00%"><tr><td align=3D"center" style=3D"font-size:0px;padding:0;padding-righ=
+t:20px;padding-left:20px;word-break:break-word;"><div style=3D"font-size:13=
+px;line-height:1;text-align:center;color:#000000;"><div class=3D"footer-tex=
+t" style=3D"line-height:1.5;font-size: 12px;color:#87867F;"> <p>You receive=
+d this email because you are subscribed to Claude&#39;s service status noti=
+fications.</p>
+ </div> <table role=3D"presentation" border=3D"0" cellpadding=3D"0" cellspa=
+cing=3D"0"><tr><td height=3D"25" style=3D"height:25px;"></td></tr></table>
+  <a style=3D"font-size: 12px; color: #87867F" href=3D"https://status.claud=
+e.com/subscriptions/r96t6rbwy643/edit">Manage your subscription</a> <table =
+role=3D"presentation" border=3D"0" cellpadding=3D"0" cellspacing=3D"0"><tr>=
+<td height=3D"25" style=3D"height:25px;"></td></tr></table>
+  <span class=3D"footer_powered_by" style=3D"color: #87867F;font-size: 12px=
+;"><a style=3D"color: #87867F;font-size: 12px;" href=3D"https://www.atlassi=
+an.com/software/statuspage?utm_source=3Demail&utm_medium=3Dpowered-by&utm_c=
+ampaign=3Dstatus.claude.com&utm_content=3DSP-notifications">Powered by Atla=
+ssian Statuspage</a> </span> <table role=3D"presentation" border=3D"0" cell=
+padding=3D"0" cellspacing=3D"0"><tr><td height=3D"60" style=3D"height:60px;=
+"></td></tr></table>
+ </div></td></tr></table></td></tr></tbody></table></div><!--[if mso | IE]>=
+</td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso |=
+ IE]></td></tr></table><![endif]--></div></body></html>
+
+--de67dbe722c506280616d059df331ea658d30cff1ede2e28ef575b286570--

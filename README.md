@@ -1,6 +1,4 @@
-# Repository Guidelines
-
-## Project Structure & Module Organization
+## Project Structure
 This repository is a small FastAPI service that listens for IMAP status emails and appends incidents to a log file.
 
 - `api.py`: FastAPI app, health endpoints, and listener thread lifecycle.

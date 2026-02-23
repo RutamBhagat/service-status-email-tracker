@@ -1,9 +1,10 @@
 import time
 import threading
+from datetime import datetime, timedelta, timezone
 
 from imapclient import IMAPClient
 
-from config import EMAIL_PASS, EMAIL_USER, IMAP_HOST, LOG_FILE, TRACKED_SENDERS
+from config import EMAIL_PASS, EMAIL_USER, IMAP_HOST, LOG_FILE, LOOKBACK_SECONDS, TRACKED_SENDERS
 from email_processing import process_email
 
 
@@ -29,12 +30,23 @@ def listener_loop(stop_event: threading.Event) -> None:
                         continue
 
                     server.idle_done()
-                    messages = server.search("UNSEEN")
+                    window_start = datetime.now(timezone.utc) - timedelta(seconds=LOOKBACK_SECONDS)
+                    messages = server.search(["SINCE", window_start.date()])
                     if messages:
-                        fetched = server.fetch(messages, "RFC822")
+                        fetched = server.fetch(messages, ["RFC822", "INTERNALDATE"])
                         for uid, msg_data in fetched.items():
                             if uid in processed_uids:
                                 continue
+
+                            internal_date = msg_data.get(b"INTERNALDATE")
+                            if internal_date is not None:
+                                if internal_date.tzinfo is None:
+                                    internal_date = internal_date.replace(tzinfo=timezone.utc)
+                                else:
+                                    internal_date = internal_date.astimezone(timezone.utc)
+                                if internal_date < window_start:
+                                    continue
+
                             process_email(
                                 message_data=msg_data,
                                 tracked_senders=TRACKED_SENDERS,

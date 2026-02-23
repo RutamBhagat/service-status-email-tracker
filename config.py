@@ -8,6 +8,7 @@ load_dotenv()
 IMAP_HOST: str = os.getenv("IMAP_HOST", "imap.gmail.com")
 EMAIL_USER: str | None = os.getenv("EMAIL_USER")
 EMAIL_PASS: str | None = os.getenv("EMAIL_PASS")
+LOOKBACK_SECONDS: int = int(os.getenv("LOOKBACK_SECONDS", "30"))
 
 LOG_FILE: Path = Path("incident_updates.log")
 

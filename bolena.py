@@ -1,4 +1,4 @@
-cimport time
+import time
 import email
 import os
 from email.policy import default
@@ -8,31 +8,21 @@ from imapclient import IMAPClient
 IMAP_HOST = os.getenv("IMAP_HOST", "imap.gmail.com")
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
+EXPECTED_SENDERS = [
+    "no-reply@status.incident.io",
+]
 
 def process_email(message_data):
     """Parses the pushed email and extracts incident info."""
     raw_email = message_data[b'RFC822']
     msg = email.message_from_bytes(raw_email, policy=default)
-    
-    # Incident.io and Atlassian status pages consistently put the status in the Subject
-    subject = msg['subject'].replace('\r', '').replace('\n', '')
-    
-    # Extract plain text body to find specific affected products
-    body = ""
-    if msg.is_multipart():
-        for part in msg.walk():
-            if part.get_content_type() == "text/plain":
-                body = part.get_payload(decode=True)
-                break
-    else:
-        body = msg.get_payload(decode=True)
-        
-    if isinstance(body, bytes):
-        body = body.decode(errors='ignore')
+
+    subject = (msg.get("subject") or "").replace('\r', '').replace('\n', '')
+    sender = (msg.get("from") or "Unknown Sender").replace('\r', '').replace('\n', '')
 
     # Simple console output satisfying the requirement
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
-    print(f"[{timestamp}] Product: OpenAI API (via Email Push)")
+    print(f"[{timestamp}] Sender: {sender}")
     print(f"Status: {subject}")
     print("-" * 60)
 
@@ -60,11 +50,15 @@ def main():
                 if responses:
                     # Temporarily pause IDLE to interact with the inbox
                     server.idle_done() 
-                    
-                    # Fetch unread incident emails
-                    messages = server.search('UNSEEN')
+
+                    # Fetch unread emails only from configured incident senders.
+                    messages = set()
+                    for sender in EXPECTED_SENDERS:
+                        matches = server.search(['UNSEEN', 'FROM', sender])
+                        messages.update(matches)
+
                     if messages:
-                        for uid, msg_data in server.fetch(messages, 'RFC822').items():
+                        for uid, msg_data in server.fetch(sorted(messages), 'RFC822').items():
                             process_email(msg_data)
                     
                     # Resume IDLE mode

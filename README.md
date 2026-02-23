@@ -23,6 +23,9 @@ export $(grep -v '^#' .env | xargs)
 uv run python bolena.py
 ```
 
+Sender filtering is configured in `bolena.py` via the `EXPECTED_SENDERS` array.
+Add one entry per incident sender email address you want to monitor.
+
 ## Deploy (VM + systemd)
 
 This app is a long-running worker, so deploy it as a service on a VM.

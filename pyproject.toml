@@ -1,5 +1,5 @@
 [project]
-name = "bolena-simplified"
+name = "service-status-email-tracker"
 version = "0.1.0"
 description = "Email push listener for incident status updates via IMAP IDLE"
 readme = "README.md"

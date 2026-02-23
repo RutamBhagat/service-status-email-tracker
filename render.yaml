@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: bolena-simplified
+    name: service-status-email-tracker
     runtime: docker
     plan: starter
     healthCheckPath: /health

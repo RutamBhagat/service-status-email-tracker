@@ -35,7 +35,7 @@ wheels = [
 ]
 
 [[package]]
-name = "bolena-simplified"
+name = "service-status-email-tracker"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

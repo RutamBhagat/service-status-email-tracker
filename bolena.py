@@ -1,19 +1,21 @@
 import time
 import email
 import os
+import threading
+from contextlib import asynccontextmanager
 from pathlib import Path
 from email.policy import default
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Response
-from fastapi.responses import FileResponse
+from fastapi.responses import PlainTextResponse
 from imapclient import IMAPClient
 
-# --- Configuration ---
+load_dotenv()
+
 IMAP_HOST = os.getenv("IMAP_HOST", "imap.gmail.com")
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
-RUN_MODE = os.getenv("RUN_MODE", "listener").strip().lower()
-API_HOST = os.getenv("API_HOST", "0.0.0.0")
-API_PORT = int(os.getenv("API_PORT", "8000"))
+
 EXPECTED_SENDERS = [
     "no-reply@status.incident.io",
     "rutambhagat@gmail.com"
@@ -21,7 +23,23 @@ EXPECTED_SENDERS = [
 LOG_FILE_PATH = "incident_updates.log"
 LOG_FILE = Path(LOG_FILE_PATH)
 
-app = FastAPI(title="Bolena Incident Log API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    stop_event = threading.Event()
+    listener_thread = threading.Thread(target=listener_loop, args=(stop_event,), daemon=True)
+    app.state.listener_stop_event = stop_event
+    app.state.listener_thread = listener_thread
+    listener_thread.start()
+    try:
+        yield
+    finally:
+        stop_event.set()
+        if listener_thread.is_alive():
+            listener_thread.join(timeout=15)
+
+
+app = FastAPI(title="Bolena Incident Log API", lifespan=lifespan)
 
 
 @app.get("/health")
@@ -35,10 +53,10 @@ def health_head() -> Response:
 
 
 @app.get("/logs")
-def get_logs() -> FileResponse:
+def get_logs() -> PlainTextResponse:
     if not LOG_FILE.exists():
         raise HTTPException(status_code=404, detail="Log file not found")
-    return FileResponse(LOG_FILE, media_type="text/plain", filename=LOG_FILE.name)
+    return PlainTextResponse(LOG_FILE.read_text(encoding="utf-8"))
 
 
 def format_log_entry(timestamp, product, status):
@@ -56,71 +74,60 @@ def process_email(message_data):
 
     subject = (msg.get("subject") or "").replace('\r', '').replace('\n', '')
     sender = (msg.get("from") or "Unknown Sender").replace('\r', '').replace('\n', '')
-    product = f"OpenAI API ({sender})"
+    product = f"({sender})"
 
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
     log_entry = format_log_entry(timestamp, product, subject)
 
-    # Console output
     print(log_entry, end="")
     print("-" * 60)
 
-    # Persist in local log file
     with open(LOG_FILE_PATH, "a", encoding="utf-8") as log_file:
         log_file.write(log_entry)
 
-def main():
+
+def listener_loop(stop_event: threading.Event):
     if not EMAIL_USER or not EMAIL_PASS:
-        raise ValueError(
-            "Missing credentials. Set EMAIL_USER and EMAIL_PASS environment variables."
-        )
+        print("Missing credentials. Set EMAIL_USER and EMAIL_PASS environment variables.")
+        return
 
-    print(f"Connecting to {IMAP_HOST}...")
-    try:
-        with IMAPClient(IMAP_HOST) as server:
-            server.login(EMAIL_USER, EMAIL_PASS)
-            server.select_folder('INBOX')
-            print("Connected! Listening for real-time push events via IMAP IDLE...")
-            
-            # Enter IDLE mode (Strict Push Architecture - No polling!)
-            server.idle()
-            
-            while True:
-                # The script blocks here. It consumes virtually 0 CPU/Bandwidth.
-                # It will wake up the millisecond the server PUSHES a new email event.
-                responses = server.idle_check(timeout=600)
-                
-                if responses:
-                    # Temporarily pause IDLE to interact with the inbox
-                    server.idle_done() 
+    while not stop_event.is_set():
+        print(f"Connecting to {IMAP_HOST}...")
+        try:
+            with IMAPClient(IMAP_HOST) as server:
+                server.login(EMAIL_USER, EMAIL_PASS)
+                server.select_folder('INBOX')
+                print("Connected! Listening for real-time push events via IMAP IDLE...")
+                server.idle()
 
-                    # Fetch unread emails only from configured incident senders.
-                    messages = set()
-                    for sender in EXPECTED_SENDERS:
-                        matches = server.search(['UNSEEN', 'FROM', sender])
-                        messages.update(matches)
+                while not stop_event.is_set():
+                    responses = server.idle_check(timeout=10)
+                    if responses:
+                        server.idle_done()
+                        messages = set()
+                        for sender in EXPECTED_SENDERS:
+                            matches = server.search(['UNSEEN', 'FROM', sender])
+                            messages.update(matches)
 
-                    if messages:
-                        for uid, msg_data in server.fetch(sorted(messages), 'RFC822').items():
-                            process_email(msg_data)
-                    
-                    # Resume IDLE mode
-                    server.idle() 
-                    
-    except KeyboardInterrupt:
-        print("\nExiting Event Listener...")
-    except Exception as e:
-        print(f"Connection error: {e}")
+                        if messages:
+                            for uid, msg_data in server.fetch(sorted(messages), 'RFC822').items():
+                                process_email(msg_data)
+                        server.idle()
 
+                try:
+                    server.idle_done()
+                except Exception:
+                    pass
+        except Exception as e:
+            print(f"Connection error: {e}")
+            if not stop_event.is_set():
+                time.sleep(5)
 
 def run_api():
     import uvicorn
 
-    uvicorn.run(app, host=API_HOST, port=API_PORT)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 
 
 if __name__ == "__main__":
-    if RUN_MODE == "api":
-        run_api()
-    else:
-        main()
+    run_api()
